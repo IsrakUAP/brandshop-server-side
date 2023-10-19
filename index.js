@@ -31,6 +31,15 @@ async function run() {
         const result =  await cursor.toArray();
         res.send(result);
     })
+    
+    app.get('/car/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await carCollection.findOne(query);
+      res.send(result);
+    })
+
+
     app.get('/product',async(req,res)=>{
       const cursor = productCollection.find();
       const result =  await cursor.toArray();
@@ -46,6 +55,25 @@ async function run() {
       const newProduct = req.body;
       const result = await productCollection.insertOne(newProduct);
       res.send(result);
+  })
+
+  app.put('/car/:id',async(req,res)=>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)}
+    const options = { upset: true};
+    const updateCar = req.body;
+    const update = {
+      $set: {
+        image: updateCar.image,
+        name: updateCar.name,
+        brandName: updateCar.brandName,
+        type: updateCar.type,
+        price: updateCar.price,
+        rating: updateCar.rating
+      }
+    }
+    const result = await carCollection.updateOne(query, update ,options);
+    res.send(result);
   })
   
   app.delete('/product/:id', async(req, res) =>{
